@@ -303,7 +303,7 @@
 	};
 
 	spi0: spi@ff190000 {
-		compatible = "rockchip,rk3328-spi", "rockchip,rk3066-spi";
+		compatible = "rockchip,rk3328-spi"
 		reg = <0x0 0xff190000 0x0 0x1000>;
 		interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
 		#address-cells = <1>;

@@ -267,7 +267,7 @@
 		#size-cells = <1>;
 		compatible = "spi-flash";
 		reg = <0x0>;
-		spi-max-frequency = <25000000>;
+		spi-max-frequency = <104000000>;
 		status = "okay";
 
 		partitions {
@@ -275,36 +275,31 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 
-			system@0 {
-				label = "system";
-				reg = <0x0 0x8000>;
+			loader1@0 {
+				label = "loader1";
+				reg = <0x0 0x3E8000>;
 				read-only;
 			};
 
-			loader@8000 {
-				label = "loader";
-				reg = <0x8000 0x3F8000>;
+			reserved1@3E8000 {
+				label = "reserved1";
+				reg = <0x3E8000 0x10000>;
 			};
 
-			reserved@400000 {
-				label = "reserved";
-				reg = <0x400000 0x3C0000>;
+			loader2@3F8000 {
+				label = "loader2";
+				reg = <0x3F8000 0x400000>;
 				read-only;
 			};
 
-			vendor@7c0000 {
-				label = "vendor";
-				reg = <0x7C0000 0x40000>;
+			reserved2@7F8000 {
+				label = "reserved2";
+				reg = <0x7F8000 0x400000>;
 			};
 
-			uboot@800000 {
-				label = "uboot";
-				reg = <0x800000 0x400000>;
-			};
-
-			atf@c00000 {
+			atf@BF8000 {
 				label = "atf";
-				reg = <0xC00000 0x400000>;
+				reg = <0xBF8000 0x400000>;
 			};
 		};
 	};
