@@ -275,31 +275,41 @@
 			#address-cells = <1>;
 			#size-cells = <1>;
 
-			loader1@0 {
+			mbr@0 {
+				label = "mbr";
+				reg = <0x0 0x200>;
+				read-only;
+			};
+			primarygpt@200 {
+				label = "primarygpt";
+				reg = <0x200 0x7E00>;
+				read-only;
+			};
+			loader1@8000 {
 				label = "loader1";
-				reg = <0x0 0x3E8000>;
+				reg = <0x8000 0x3E8000>;
 				read-only;
 			};
 
-			reserved1@3E8000 {
+			reserved1@3F0000 {
 				label = "reserved1";
-				reg = <0x3E8000 0x10000>;
+				reg = <0x3F0000 0x10000>;
 			};
 
-			loader2@3F8000 {
-				label = "loader2";
-				reg = <0x3F8000 0x400000>;
+			reserved2@400000 {
+				label = "reserved2";
+				reg = <0x400000 0x400000>;
 				read-only;
 			};
 
-			reserved2@7F8000 {
-				label = "reserved2";
-				reg = <0x7F8000 0x400000>;
+			loader2@800000 {
+				label = "loader2";
+				reg = <0x800000 0x400000>;
 			};
 
-			atf@BF8000 {
+			atf@C00000 {
 				label = "atf";
-				reg = <0xBF8000 0x400000>;
+				reg = <0xC00000 0x400000>;
 			};
 		};
 	};
