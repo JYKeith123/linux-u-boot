@@ -24,11 +24,12 @@
 		i2c1 = "/i2c@ff160000";
 		i2c2 = "/i2c@ff170000";
 		i2c3 = "/i2c@ff180000";
+		spi0 = "/spi@ff190000";
 		ethernet0 = "/ethernet@ff540000";
 		ethernet1 = "/ethernet@ff550000";
-		mmc0 = "/dwmmc@ff520000";
-		mmc1 = "/dwmmc@ff500000";
-		mmc2 = "/dwmmc@ff5f0000";
+		mmc0 = "/rksdmmc@ff520000";
+		mmc1 = "/rksdmmc@ff500000";
+		mmc2 = "/rksdmmc@ff5f0000";
 	};
 
 	cpus {
@@ -622,23 +623,28 @@
 	};
 
 	spi@ff190000 {
-		compatible = "rockchip,rk3328-spi", "rockchip,rk3066-spi";
+		u-boot,dm-spl;
+		compatible = "rockchip,rk3328-spi";
 		reg = <0x0 0xff190000 0x0 0x1000>;
 		interrupts = <0x0 0x31 0x4>;
 		#address-cells = <0x1>;
 		#size-cells = <0x0>;
 		clocks = <0x2 0x20 0x2 0xd1>;
 		clock-names = "spiclk", "apb_pclk";
+		dmas = <0x8 0x8 0x8 0x9>;
+		#dma-cells = <0x2>;
+		dma-names = "tx", "rx";
 		pinctrl-names = "default";
 		pinctrl-0 = <0x3a 0x3b 0x3c 0x3d>;
 		status = "okay";
 
 		gd25q128@0 {
+			u-boot,dm-spl;
 			#address-cells = <0x1>;
 			#size-cells = <0x0>;
 			compatible = "jedec,spi-nor";
 			reg = <0x0>;
-			spi-max-frequency = <0x17d7840>;
+			spi-max-frequency = <0x0632ea00>;
 			status = "okay";
 
 			partitions {
@@ -646,14 +652,44 @@
 				#address-cells = <0x1>;
 				#size-cells = <0x1>;
 
-				loader@8000 {
-					label = "loader";
-					reg = <0x8000 0x3f8000>;
+				mbr@0 {
+					label = "mbr";
+					reg = <0x0 0x200>;
+					read-only;
+				};
+				
+				primarygpt@200 {
+					label = "primarygpt";
+					reg = <0x200 0x7E00>;
+					read-only;
+				};
+				
+				loader1@8000 {
+					label = "loader1";
+					reg = <0x8000 0x3E8000>;					
 				};
 
-				vendor@7c0000 {
-					label = "vendor";
-					reg = <0x7c0000 0x40000>;
+				reserved1@3F0000 {
+					label = "reserved1";
+					reg = <0x3F0000 0x10000>;
+					read-only;
+				};
+
+				reserved2@400000 {
+					label = "reserved2";
+					reg = <0x400000 0x400000>;
+					read-only;
+				};
+
+				loader2@800000 {
+					label = "loader2";
+					reg = <0x800000 0x400000>;
+				};
+
+				atf@C00000 {
+					label = "atf";
+					reg = <0xC00000 0x400000>;
+					read-only;
 				};
 			};
 		};
@@ -728,6 +764,17 @@
 			linux,phandle = <0xb>;
 			phandle = <0xb>;
 		};
+	};
+	
+	dmc: dmc {
+		u-boot,dm-pre-reloc;
+		compatible = "rockchip,rk3328-dmc";
+		reg = <0x0 0xff400000 0x0 0x1000
+		       0x0 0xff780000 0x0 0x3000
+		       0x0 0xff100000 0x0 0x1000
+		       0x0 0xff440000 0x0 0x1000
+		       0x0 0xff720000 0x0 0x1000
+		       0x0 0xff798000 0x0 0x1000>;
 	};
 
 	efuse@ff260000 {
@@ -1197,7 +1244,7 @@
 		};
 	};
 
-	dwmmc@ff520000 {
+	rksdmmc@ff520000 {
 		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xff520000 0x0 0x4000>;
 		max-frequency = <0xbebc200>;
@@ -1206,6 +1253,7 @@
 		fifo-depth = <0x100>;
 		interrupts = <0x0 0xe 0x4>;
 		status = "okay";
+		u-boot,dm-spl;
 		bus-width = <0x8>;
 		cap-mmc-highspeed;
 		supports-emmc;
@@ -1219,7 +1267,7 @@
 		vqmmc-supply = <0x25>;
 	};
 
-	dwmmc@ff500000 {
+	rksdmmc@ff500000 {
 		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xff500000 0x0 0x4000>;
 		max-frequency = <0x8f0d180>;
@@ -1228,6 +1276,7 @@
 		fifo-depth = <0x100>;
 		interrupts = <0x0 0xc 0x4>;
 		status = "okay";
+		u-boot,dm-spl;
 		bus-width = <0x4>;
 		cap-mmc-highspeed;
 		cap-sd-highspeed;
@@ -1241,7 +1290,7 @@
 		vqmmc-supply = <0x61>;
 	};
 
-	dwmmc@ff510000 {
+	rksdmmc@ff510000 {
 		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xff510000 0x0 0x4000>;
 		max-frequency = <0x8f0d180>;
@@ -1349,7 +1398,7 @@
 		status = "okay";
 	};
 
-	dwmmc@ff5f0000 {
+	rksdmmc@ff5f0000 {
 		compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
 		reg = <0x0 0xff5f0000 0x0 0x4000>;
 		max-frequency = <0x8f0d180>;
