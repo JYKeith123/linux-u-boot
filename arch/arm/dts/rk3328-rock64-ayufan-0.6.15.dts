@@ -5,10 +5,6 @@
  */
 
 /dts-v1/;
-#include "rk3328-sdram-lpddr3-1600.dtsi"
-
-/dts-v1/;
-
 / {
 	compatible = "rockchip,rk3328-rock64", "rockchip,rk3328";
 	interrupt-parent = <0x1>;
@@ -2505,3 +2501,5 @@
 		status = "disabled";
 	};
 };
+
+#include "rk3328-sdram-lpddr3-1600.dtsi"
