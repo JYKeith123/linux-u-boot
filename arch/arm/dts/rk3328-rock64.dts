@@ -59,6 +59,11 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 	};
+
+	adc-keys {
+		compatible = "adc-keys";
+		io-channels = <&saradc 0>;
+	};
 };
 
 &saradc {
@@ -126,6 +131,7 @@
 &usb_host0_xhci {
 	vbus-supply = <&vcc5v0_host_xhci>;
 	status = "okay";
+	maximum-speed = "high-speed";
 };
 
 &i2c1 {
@@ -151,6 +157,14 @@
 
 		pwrkey {
 			status = "okay";
+		};
+
+		led1 {
+			label = "standby";
+		};
+
+		led2 {
+			label = "power";
 		};
 
 		regulators {
@@ -235,9 +249,9 @@
 					regulator-on-in-suspend;
 					regulator-suspend-microvolt = <1000000>;
 				};
-                        };
-                };
-        };
+			};
+		};
+	};
 };
 
 &gmac2io {
@@ -251,9 +265,8 @@
 	assigned-clock-parents = <&gmac_clkin>, <&gmac_clkin>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&rgmiim1_pins>;
-	max-speed = <100>;
-	tx_delay = <0x26>;
-	rx_delay = <0x11>;
+	tx_delay = <0x18>;
+	rx_delay = <0x18>;
 	status = "okay";
 };
 
